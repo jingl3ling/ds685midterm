@@ -330,9 +330,18 @@ _OPTIMIZER_SECTION_TYPES: dict[str, type] = {
 }
 
 
+def _tuples_to_lists(obj: Any) -> Any:
+    """Recursively convert tuples to lists for YAML-safe serialization."""
+    if isinstance(obj, dict):
+        return {k: _tuples_to_lists(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_tuples_to_lists(item) for item in obj]
+    return obj
+
+
 def config_to_dict(cfg: TCCConfig) -> dict[str, Any]:
     """Convert a ``TCCConfig`` instance to a plain nested dictionary."""
-    return asdict(cfg)
+    return _tuples_to_lists(asdict(cfg))
 
 
 def _dict_to_dataclass(cls: type, data: dict[str, Any]) -> Any:
