@@ -1,0 +1,42 @@
+services:
+  torch.dev.gpu:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.torch.dev.gpu
+      args:
+        WORKSPACE_DIR: ${WORKSPACE_DIR:-/workspaces/tcc}
+        WORKSPACE_USER: ${WORKSPACE_USER:-vscode}
+    container_name: tcc-dev
+    ports:
+      - "${DEV_JUPYTER_PORT:-8888}:8888"
+      - "${DEV_TENSORBOARD_PORT:-6006}:6006"
+      - "${DEV_PORT:-8000}:8000"
+    volumes:
+      - .:${WORKSPACE_DIR:-/workspaces/tcc}
+      - ${SSH_AUTH_SOCK:-/dev/null}:/ssh-agent
+    working_dir: ${WORKSPACE_DIR:-/workspaces/tcc}
+    environment:
+      - PATH=${WORKSPACE_DIR:-/workspaces/tcc}/.venv/bin:$PATH
+      - PYTHONPATH=${WORKSPACE_DIR:-/workspaces/tcc}
+      - VIRTUAL_ENV=${WORKSPACE_DIR:-/workspaces/tcc}/.venv
+      - UV_CACHE_DIR=/home/${WORKSPACE_USER:-vscode}/.uv-cache
+      - SSH_AUTH_SOCK=/ssh-agent
+    env_file:
+      - path: .env
+        required: false
+    command: bash -c "tail -f /dev/null"
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - tcc-network
+
+networks:
+  tcc-network:
+    driver: bridge

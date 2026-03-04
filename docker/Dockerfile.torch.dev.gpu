@@ -1,0 +1,35 @@
+FROM pytorch/pytorch:2.7.1-cuda12.8-cudnn9-runtime
+
+# specify vscode as the user name in the docker
+# This user name should match that of the VS Code .devcontainer
+ARG USERNAME=vscode
+ARG USER_UID=1001
+ARG USER_GID=$USER_UID
+
+# Create a non-root user
+RUN groupadd --gid $USER_GID $USERNAME \
+  && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
+  && apt-get update \
+  && apt-get install -y sudo \
+  && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
+  && chmod 0440 /etc/sudoers.d/$USERNAME \
+  && rm -rf /var/lib/apt/lists/* \
+  && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc
+
+# System packages
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+     && apt-get -y install --no-install-recommends curl git-lfs ffmpeg make bash-completion python3-venv openssh-client \
+     && rm -rf /var/cache/apt && \
+     apt-get clean
+
+# Install uv for modern Python package management
+COPY --from=ghcr.io/astral-sh/uv:latest --chown=vscode: /uv /uvx /bin/
+
+# Copy the constraint file - we respect the existing package versions
+RUN mkdir -p /etc/pip
+RUN pip list --format=freeze > /etc/pip/constraint.txt
+
+USER vscode
+
+# Disable GPG signing for git commits
+RUN git config --global commit.gpgsign false

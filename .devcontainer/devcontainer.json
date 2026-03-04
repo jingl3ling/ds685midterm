@@ -1,0 +1,64 @@
+// For format details, see https://aka.ms/devcontainer.json.
+{
+	"name": "tcc",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+	"service": "torch.dev.gpu",
+	"workspaceFolder": "/workspaces/tcc",
+	"remoteUser": "vscode",
+	"postCreateCommand": "bash -c 'if [ -d \".venv\" ]; then source .venv/bin/activate && echo \"Dev container setup complete! Python available at: $(which python)\" && echo \"UV version: $(uv --version)\"; else echo \"Virtual environment not found. Please run: make start\"; fi'",
+	"containerEnv": {
+		"DISPLAY": "${localEnv:DISPLAY}",
+		"PYTHONUNBUFFERED": "True",
+		"UV_LINK_MODE": "copy",
+		"UV_PROJECT_ENVIRONMENT": "${workspaceFolder}/.venv"
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": false,
+			"installOhMyZsh": false,
+			"upgradePackages": false,
+			"username": "vscode",
+			"uid": "1001",
+			"gid": "1001"
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest",
+			"ppa": false
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.debugpy",
+				"ms-toolsai.jupyter",
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"eamodio.gitlens",
+				"charliermarsh.ruff",
+				"tamasfe.even-better-toml"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/workspaces/tcc/.venv/bin/python",
+				"python.terminal.activateEnvironment": true,
+				"python.analysis.extraPaths": [
+					"/workspaces/tcc"
+				],
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/bin/bash"
+					}
+				},
+				"terminal.integrated.defaultProfile.linux": "bash",
+				"dev.containers.copyGitConfig": true
+			}
+		}
+	},
+	"remoteEnv": {
+		"PATH": "/opt/conda/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+	},
+	"postStartCommand": "echo 'source /usr/share/bash-completion/completions/make' >> ~/.bashrc"
+}

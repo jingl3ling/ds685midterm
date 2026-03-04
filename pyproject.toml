@@ -1,0 +1,159 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tcc"
+version = "0.1.0.dev0"
+description = "PyTorch implementation of Temporal Cycle-Consistency Learning (CVPR 2019)"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Members of Technical Staff @ Aegean AI", email = "pantelis.monogioudis@aegean.ai" }
+]
+keywords = ["self-supervised learning", "video representation", "temporal alignment", "pytorch"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.11, <3.13"
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "pillow>=9.4.0",
+    "opencv-python>=4.7.0",
+    "tensorboard>=2.12.0",
+    "pyyaml>=6.0",
+    "tqdm>=4.65.0",
+    "ipykernel>=6.29.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/aegean-ai/tcc"
+Repository = "https://github.com/aegean-ai/tcc"
+Issues = "https://github.com/aegean-ai/tcc/issues"
+
+[project.optional-dependencies]
+notebooks = [
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
+    "scikit-learn>=1.4.0",
+    "plotly>=5.18.0",
+    "wandb>=0.18.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "pre-commit>=4.0.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "pre-commit>=4.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tcc"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/pyproject.toml",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 119
+extend-exclude = [
+    "build",
+    "dist",
+    ".eggs",
+    "*.egg-info",
+]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "C", "N", "UP", "B", "A", "S", "T20", "SIM", "ARG", "PTH", "PL", "RUF"]
+ignore = [
+    "C901",
+    "E501",
+    "E741",
+    "PLR0913",
+    "PLR0912",
+    "PLR0915",
+    "S101",
+    "T201",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401", "F403", "F811"]
+"tests/*" = ["S101", "ARG", "PLR2004"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+known-first-party = ["tcc"]
+force-single-line = false
+split-on-trailing-comma = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "torch.*",
+    "torchvision.*",
+    "cv2.*",
+    "wandb.*",
+    "sklearn.*",
+    "tensorboard.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=tcc",
+    "--cov-report=term-missing",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "gpu: marks tests requiring GPU",
+]
+
+[tool.coverage.run]
+source = ["src/tcc"]
+branch = true
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+precision = 2

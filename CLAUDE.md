@@ -15,20 +15,74 @@ PyTorch port of Temporal Cycle-Consistency Learning (TCC) — a self-supervised 
 
 When porting code, reference the `tf2` branch for the original implementation.
 
-## Self-supervised Algorithms (to be ported)
+## Development Workflow
 
-- **TCC** (Temporal Cycle-Consistency)
-- **Shuffle and Learn**
-- **Time-Contrastive Networks (TCN)**
-- **Combined methods**
-- **Supervised baseline** (per-frame classification)
+**CRITICAL**: This is a **container-first development environment**. All development workflows and make commands are designed to run **inside the devcontainer**, not on the host machine.
 
-## Evaluation Tasks (to be ported)
+### Starting Development
+1. Open the project in VS Code with the Dev Containers extension
+2. Use "Dev Containers: Reopen in Container" command
+3. Once inside the container, run `make start` to initialize the environment
 
-- Phase classification
-- Few-shot phase classification
-- Phase progression
-- Kendall's Tau
+### Key Constraints
+- Python environment setup (`make start`, `make venv-recreate`) must run inside the container
+- The Makefile uses `uv` package manager which is only available in the container
+- Virtual environment at `.venv` has system-site-packages access to container-installed packages
+- UV package manager respects container constraints (`/etc/pip/constraint.txt`)
+
+### Host vs. Container Operations
+- **Inside Container**: All make commands, Python development, package management
+- **On Host**: Git operations, editing `.devcontainer/devcontainer.json`
+
+## Development Commands
+
+**Note**: All commands below must be executed from within the devcontainer.
+
+### Initial Setup
+```bash
+make start                    # Create venv, sync deps, install package
+source .venv/bin/activate     # Activate environment
+```
+
+### Code Quality
+```bash
+make format                   # Format with ruff
+make lint                     # Lint with auto-fix
+make lint-check               # Lint without modifications
+make type-check               # MyPy strict type checking
+make quality                  # All quality checks (lint-check + type-check)
+make style                    # Format + lint combined
+```
+
+### Testing
+```bash
+make test                     # Run pytest
+make test-cov                 # Pytest with coverage
+```
+
+### Dependencies
+```bash
+make deps-sync                # Sync dependencies from lock file
+make deps-update              # Update dependencies
+make venv-recreate            # Clean and recreate venv
+```
+
+## Architecture
+
+### Package Structure
+- `src/tcc/` — Main package (PyTorch implementation)
+- `tests/` — Test suite
+- `docs/` — Architecture and design documents
+- `docker/` — Dockerfile variants
+
+### Package Management
+Uses **uv** with constraints from base Docker image (`/etc/pip/constraint.txt`). Virtual environment at `.venv` with system-site-packages access.
+
+## Code Style
+
+- **Formatter/Linter**: Ruff (line length: 119)
+- **Type Checker**: MyPy strict mode
+- **Python**: 3.11+
 
 ## Issue Tracking
 
