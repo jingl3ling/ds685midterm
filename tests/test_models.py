@@ -55,16 +55,17 @@ class TestBaseModel:
 
     def test_only_bn_mode(self):
         model = BaseModel(cfg={"train_base": "only_bn"})
-        has_bn_grad = False
+        # Collect BN parameter ids via isinstance (matches model logic)
+        bn_param_ids = set()
         for m in model.backbone.modules():
             if isinstance(m, torch.nn.BatchNorm2d):
                 for p in m.parameters():
-                    if p.requires_grad:
-                        has_bn_grad = True
-        assert has_bn_grad, "BN params should be trainable in only_bn mode"
-        # Non-BN params should be frozen
+                    bn_param_ids.add(id(p))
+        assert len(bn_param_ids) > 0, "Should have BN parameters"
         for name, p in model.backbone.named_parameters():
-            if "bn" not in name and "downsample.1" not in name:
+            if id(p) in bn_param_ids:
+                assert p.requires_grad, f"BN param {name} should be trainable"
+            else:
                 assert not p.requires_grad, f"{name} should be frozen"
 
     def test_train_all_mode(self):
