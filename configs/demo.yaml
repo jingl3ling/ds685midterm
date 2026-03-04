@@ -1,0 +1,25 @@
+# TCC demo configuration
+# Quick-run settings: fewer iterations, smaller images, fewer frames.
+# Ported from tf2:configs/demo.yml
+
+data:
+  image_size: 112
+  sample_all_stride: 20
+
+datasets:
+- pouring
+
+eval:
+  batch_size: 2
+  classification_fractions:
+  - 0.1
+  num_frames: 5
+  val_iters: 10
+
+train:
+  batch_size: 2
+  max_iters: 10
+  num_frames: 5
+  visualize_interval: 200
+
+training_algo: alignment

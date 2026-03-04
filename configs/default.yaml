@@ -1,0 +1,181 @@
+# TCC default configuration
+# All values match the dataclass defaults in src/tcc/config.py
+
+alignment:
+  cycle_length: 2
+  fraction: 1.0
+  huber_delta: 0.1
+  label_smoothing: 0.1
+  loss_type: regression_mse_var
+  normalize_indices: true
+  similarity_type: l2
+  stochastic_matching: false
+  temperature: 0.1
+  variance_lambda: 0.001
+
+alignment_sal_tcn:
+  alignment_loss_weight: 0.33
+  sal_loss_weight: 0.33
+
+augmentation:
+  brightness: true
+  brightness_max_delta: 0.12549019607843137
+  contrast: true
+  contrast_lower: 0.5
+  contrast_upper: 1.5
+  hue: false
+  hue_max_delta: 0.2
+  random_crop: false
+  random_flip: true
+  saturation: false
+  saturation_lower: 0.5
+  saturation_upper: 1.5
+
+checkpoint:
+  save_interval: 1000
+
+classification:
+  dropout_rate: 0.0
+  label_smoothing: 0.0
+
+data:
+  augment: true
+  frame_labels: true
+  frame_stride: 15
+  image_size: 224
+  num_prefetch_batches: 1
+  num_steps: 2
+  per_class: false
+  per_dataset_fraction: 1.0
+  random_offset: 1
+  sample_all_stride: 1
+  sampling_strategy: offset_uniform
+  shuffle_queue_size: 0
+  stride: 16
+
+datasets:
+- pouring
+
+eval:
+  batch_size: 2
+  classification_fractions:
+  - 0.1
+  - 0.5
+  - 1.0
+  few_shot_num_episodes: 50
+  few_shot_num_labeled:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  frames_per_batch: 25
+  kendalls_tau_distance: sqeuclidean
+  kendalls_tau_stride: 5
+  num_frames: 20
+  tasks:
+  - algo_loss
+  - classification
+  - kendalls_tau
+  - event_completion
+  - few_shot_classification
+  val_iters: 20
+
+logdir: /tmp/alignment_logs/
+
+logging:
+  report_interval: 100
+
+model:
+  base_model:
+    layer: conv4_block3_out
+    network: resnet50
+    train_base: only_bn
+  conv_embedder:
+    base_dropout_rate: 0.0
+    base_dropout_spatial: false
+    capacity_scalar: 2
+    conv_layers:
+    - - 256
+      - 3
+      - true
+    - - 256
+      - 3
+      - true
+    dropout_rate: 0.1
+    embedding_size: 128
+    fc_dropout_rate: 0.1
+    fc_layers:
+    - - 256
+      - true
+    - - 256
+      - true
+    flatten_method: max_pool
+    l2_normalize: false
+    num_context_steps: 2
+    pooling: max
+    use_bn: true
+  convgru_embedder:
+    conv_layers:
+    - - 512
+      - 3
+      - true
+    - - 512
+      - 3
+      - true
+    dropout_rate: 0.0
+    gru_layers:
+    - 128
+    use_bn: true
+  embedder_type: conv
+  l2_reg_weight: 1.0e-05
+  resnet_pretrained_weights: /tmp/resnet50v2_weights_tf_dim_ordering_tf_kernels_notop.h5
+  train_embedding: true
+  vggm:
+    use_bn: true
+
+optimizer:
+  lr:
+    decay_type: fixed
+    exp_decay_rate: 0.97
+    exp_decay_steps: 1000
+    initial_lr: 0.0001
+    manual_lr_decay_rate: 0.1
+    manual_lr_step_boundaries:
+    - 5000
+    - 10000
+    num_warmup_steps: 0
+  type: adam
+  weight_decay: 0.0
+
+path_to_tfrecords: /tmp/%s_tfrecords/
+
+sal:
+  dropout_rate: 0.0
+  fc_layers:
+  - - 128
+    - true
+  - - 64
+    - true
+  - - 2
+    - false
+  label_smoothing: 0.0
+  num_samples: 8
+  shuffle_fraction: 0.75
+
+tcn:
+  positive_window: 5
+  reg_lambda: 0.002
+
+train:
+  batch_size: 2
+  max_iters: 150000
+  num_frames: 20
+  visualize_interval: 200
+
+training_algo: alignment
