@@ -54,6 +54,6 @@
 # - github.org
 # - github.repo
 
-dolt.port: 3310
+dolt.port: 3316
 
-dolt.database: "beads"
+dolt.database: "tcc"
