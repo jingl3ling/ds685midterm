@@ -5,6 +5,7 @@ docker_service: torch.dev.gpu
 valid_environments:
   - torch.dev.gpu
   - colab
+colab_base_url: "https://colab.research.google.com/github/aegean-ai/tcc/blob/main/notebooks"
 source_prefix_strip:
   - "aiml-common/assignments/topics/"
   - "aiml-common/"

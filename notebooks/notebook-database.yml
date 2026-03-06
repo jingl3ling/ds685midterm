@@ -2,7 +2,7 @@
 # Registry tracking notebooks and their execution environments.
 
 notebooks:
-  - source: aiml-common/assignments/topics/self-supervised/tcc_pouring_tutorial_aegean_main.ipynb
+  - source: aiml-common/assignments/topics/self-supervised/tcc-pouring-tutorial/tcc_pouring_tutorial_aegean_main.ipynb
     notebook: self-supervised/tcc_pouring_tutorial_aegean_main.ipynb
     code_cells: 22
     environment: torch.dev.gpu
