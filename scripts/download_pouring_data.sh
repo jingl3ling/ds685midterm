@@ -33,31 +33,37 @@ set -e
 DATA_DIR="${1:-./data/pouring}"
 mkdir -p "${DATA_DIR}"
 
-echo "Downloading pouring dataset..."
-echo "Target directory: ${DATA_DIR}"
+echo "Downloading pouring dataset from HuggingFace..."
+echo "  Source: https://huggingface.co/datasets/sermanet/multiview-pouring"
+echo "  Target: ${DATA_DIR}"
+echo ""
 
-# Original TFRecord URLs from the TCC paper.
-# These may need to be converted to image-folder format after download.
-BASE_URL="https://storage.googleapis.com/brain-tcc-data/pouring"
-
-for SPLIT in train val; do
-    echo "Downloading ${SPLIT} split..."
-    wget -c "${BASE_URL}/${SPLIT}.tfrecord" -O "${DATA_DIR}/${SPLIT}.tfrecord" || {
-        echo "Warning: Could not download ${SPLIT}.tfrecord"
-        echo "The dataset may no longer be available at the original URL."
-        echo "Check the TCC repository for updated download instructions."
-    }
-done
+# Primary method: HuggingFace CLI (recommended)
+if command -v huggingface-cli &> /dev/null; then
+    huggingface-cli download sermanet/multiview-pouring \
+        --repo-type dataset \
+        --local-dir "${DATA_DIR}"
+else
+    echo "huggingface-cli not found. Install with: pip install huggingface_hub"
+    echo ""
+    echo "Alternatively, download from Python:"
+    echo ""
+    echo "  from huggingface_hub import snapshot_download"
+    echo "  snapshot_download("
+    echo "      repo_id='sermanet/multiview-pouring',"
+    echo "      repo_type='dataset',"
+    echo "      local_dir='${DATA_DIR}',"
+    echo "  )"
+    exit 1
+fi
 
 echo ""
 echo "Download complete. Files saved to: ${DATA_DIR}"
 echo ""
 echo "IMPORTANT: The downloaded files are in TFRecord format."
-echo "To convert to the image-folder format required by the PyTorch pipeline,"
-echo "you will need to write a conversion script or obtain the raw videos"
-echo "and use:"
+echo "To convert to the image-folder format required by the PyTorch pipeline:"
 echo ""
 echo "  python -m tcc.dataset_preparation.videos_to_dataset \\"
-echo "      --input-dir <raw_videos_dir> \\"
-echo "      --output-dir ${DATA_DIR}/processed \\"
-echo "      --name pouring"
+echo "      --input-dir ${DATA_DIR} \\"
+echo "      --output-dir ${DATA_DIR}_processed/pouring \\"
+echo "      --name pouring --fps 15 --width 224 --height 224"
