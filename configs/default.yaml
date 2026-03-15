@@ -90,6 +90,10 @@ logdir: /tmp/alignment_logs/
 
 logging:
   report_interval: 100
+  wandb_enabled: false
+  wandb_project: tcc
+  wandb_entity: ''
+  wandb_run_name: ''
 
 model:
   base_model:

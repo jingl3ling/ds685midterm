@@ -44,6 +44,8 @@ from torch.utils.tensorboard import SummaryWriter
 
 from tcc.algos.algorithm import Algorithm
 from tcc.algos.registry import get_algo
+from dataclasses import asdict
+
 from tcc.config import TCCConfig, get_default_config, load_config, save_config
 from tcc.datasets import DataConfig, create_dataset
 
@@ -54,6 +56,11 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 _CHECKPOINT_RE = re.compile(r"checkpoint_(\d+)\.pt$")
+
+
+def _config_to_dict(cfg: TCCConfig) -> dict[str, object]:
+    """Flatten a TCCConfig to a plain dict for W&B logging."""
+    return asdict(cfg)
 
 
 class _WarmupScheduler(_LRScheduler):
@@ -310,6 +317,26 @@ def train(cfg: TCCConfig) -> None:
 
     writer = SummaryWriter(os.path.join(logdir, "train_logs"))
 
+    # W&B logging (optional)
+    wandb_run = None
+    if cfg.logging.wandb_enabled:
+        try:
+            import wandb
+
+            wandb_kwargs: dict[str, object] = {
+                "project": cfg.logging.wandb_project,
+                "config": _config_to_dict(cfg),
+                "dir": logdir,
+            }
+            if cfg.logging.wandb_entity:
+                wandb_kwargs["entity"] = cfg.logging.wandb_entity
+            if cfg.logging.wandb_run_name:
+                wandb_kwargs["name"] = cfg.logging.wandb_run_name
+            wandb_run = wandb.init(**wandb_kwargs)  # type: ignore[arg-type]
+            logger.info("W&B run initialized: %s", wandb_run.url if wandb_run else "inline")
+        except ImportError:
+            logger.warning("wandb not installed — skipping W&B logging. Install with: pip install wandb")
+
     # Model + algo
     algo = get_algo(cfg.training_algo, cfg=cfg)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -365,6 +392,8 @@ def train(cfg: TCCConfig) -> None:
                 current_lr = optimizer.param_groups[0]["lr"]
                 writer.add_scalar("loss", loss, global_step)
                 writer.add_scalar("learning_rate", current_lr, global_step)
+                if wandb_run is not None:
+                    wandb_run.log({"loss": loss, "learning_rate": current_lr}, step=global_step)
                 logger.info(
                     "Iter[%d/%d], Loss: %.3f, LR: %.6f",
                     global_step,
@@ -382,6 +411,8 @@ def train(cfg: TCCConfig) -> None:
     # Final checkpoint
     save_checkpoint(logdir, algo, optimizer, global_step, cfg)
     writer.close()
+    if wandb_run is not None:
+        wandb_run.finish()
     logger.info("Training complete. Final step: %d", global_step)
 
 

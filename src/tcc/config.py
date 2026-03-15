@@ -259,6 +259,10 @@ class LoggingConfig:
     """Logging parameters."""
 
     report_interval: int = 100
+    wandb_enabled: bool = False
+    wandb_project: str = "tcc"
+    wandb_entity: str = ""
+    wandb_run_name: str = ""
 
 
 @dataclass
