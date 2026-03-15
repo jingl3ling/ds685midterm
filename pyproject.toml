@@ -46,6 +46,7 @@ notebooks = [
     "plotly>=5.18.0",
     "wandb>=0.18.0",
     "huggingface-hub>=0.20.0",
+    "boto3>=1.34.0",
 ]
 dev = [
     "pytest>=8.0.0",
