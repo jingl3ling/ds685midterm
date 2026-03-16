@@ -1,0 +1,12 @@
+training_algo: "alignment"
+datasets: ["pouring"]
+path_to_tfrecords: "/workspaces/tcc/data/pouring_processed/pouring/%s"
+logdir: "/workspaces/tcc/runs_tutorial/pouring_tcc_d64"
+train:
+  max_iters: 1000
+  batch_size: 2
+dataset:
+  num_steps: 8
+model:
+  conv_embedder:
+    embedding_size: 64

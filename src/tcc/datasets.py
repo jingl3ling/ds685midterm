@@ -567,7 +567,7 @@ def create_dataset(
         batch_size=batch_size,
         shuffle=is_train,
         drop_last=is_train,
-        num_workers=4,
+        num_workers=0,
         pin_memory=True,
         collate_fn=_collate_fn,
     )
