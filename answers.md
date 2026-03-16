@@ -34,3 +34,34 @@ Despite the strong alignment, several failure modes remain in the representation
 * **Self-similar frames:** Frames from non-adjacent stages that look identical (e.g., the bottle resting completely still on the table at the beginning and end of the video) can collapse into the same cluster, breaking the chronological flow.
 
 
+------------------------------------------------
+🔥 TRAINING D=32 (FORCED SINGLE-THREAD)
+------------------------------------------------
+🚀 GLOBAL LOCKDOWN: All DataLoaders forced to 0 workers.
+2026-03-16 03:48:28,485 INFO __main__: Iter[0/1000], Loss: 74.182, LR: 0.000100
+2026-03-16 03:49:04,281 INFO __main__: Iter[100/1000], Loss: 248.946, LR: 0.000100
+2026-03-16 03:49:41,637 INFO __main__: Iter[200/1000], Loss: 59.146, LR: 0.000100
+2026-03-16 03:50:15,058 INFO __main__: Iter[300/1000], Loss: 453.330, LR: 0.000100
+2026-03-16 03:50:51,032 INFO __main__: Iter[400/1000], Loss: 8690.495, LR: 0.000100
+2026-03-16 03:51:27,447 INFO __main__: Iter[500/1000], Loss: 683449.000, LR: 0.000100
+2026-03-16 03:52:01,946 INFO __main__: Iter[600/1000], Loss: 4088.252, LR: 0.000100
+2026-03-16 03:52:38,358 INFO __main__: Iter[700/1000], Loss: 27773.121, LR: 0.000100
+2026-03-16 03:53:15,173 INFO __main__: Iter[800/1000], Loss: 9590843.000, LR: 0.000100
+2026-03-16 03:53:50,863 INFO __main__: Iter[900/1000], Loss: 5218.028, LR: 0.000100
+2026-03-16 03:54:29,011 INFO __main__: Saved checkpoint to /tmp/alignment_logs/checkpoint_1000.pt
+2026-03-16 03:54:29,011 INFO __main__: Training complete. Final step: 1000
+------------------------------------------------
+🔥 TRAINING D=64 (FORCED SINGLE-THREAD)
+------------------------------------------------
+🚀 GLOBAL LOCKDOWN: All DataLoaders forced to 0 workers.
+2026-03-16 03:54:35,903 INFO __main__: Restored checkpoint from /tmp/alignment_logs/checkpoint_1000.pt at step 1000
+2026-03-16 03:54:36,804 INFO __main__: Saved checkpoint to /tmp/alignment_logs/checkpoint_1000.pt
+2026-03-16 03:54:36,804 INFO __main__: Training complete. Final step: 1000
+------------------------------------------------
+🔥 TRAINING D=128 (FORCED SINGLE-THREAD)
+------------------------------------------------
+🚀 GLOBAL LOCKDOWN: All DataLoaders forced to 0 workers.
+2026-03-16 03:54:42,732 INFO __main__: Restored checkpoint from /tmp/alignment_logs/checkpoint_1000.pt at step 1000
+2026-03-16 03:54:43,504 INFO __main__: Saved checkpoint to /tmp/alignment_logs/checkpoint_1000.pt
+2026-03-16 03:54:43,505 INFO __main__: Training complete. Final step: 1000
+
