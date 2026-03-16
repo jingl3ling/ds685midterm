@@ -1,4 +1,4 @@
-# Temporal Cycle-Consistency Learning
+# Temporal Cycle-Consistency Learning - I had some issues accessing the Notebook, please see answers.MD for answers and log
 
 PyTorch implementation of [Temporal Cycle-Consistency Learning](https://arxiv.org/abs/1904.07846) (Dwibedi et al., CVPR 2019).
 
