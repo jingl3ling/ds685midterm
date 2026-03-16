@@ -19,7 +19,12 @@ When porting code, reference the `tf2` branch for the original implementation.
 
 **CRITICAL**: This is a **container-first development environment**. All development workflows and make commands are designed to run **inside the devcontainer**, not on the host machine.
 
-### Starting Development
+### Starting Development (CLI / Claude Code)
+1. Build and start the container: `docker compose build && docker compose up -d`
+2. Run commands inside the container: `docker compose exec torch.dev.gpu bash -c "make start"`
+3. If port 8000 conflicts: `DEV_PORT=8001 docker compose up -d`
+
+### Starting Development (VS Code)
 1. Open the project in VS Code with the Dev Containers extension
 2. Use "Dev Containers: Reopen in Container" command
 3. Once inside the container, run `make start` to initialize the environment
